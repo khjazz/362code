@@ -8,19 +8,19 @@ student_id = "12621133"
 from flask import Flask
 app = Flask(__name__)
 
-@app.route("/<int(signed=True):a>/plus/<int(signed=True):b>")
+@app.get("/<int(signed=True):a>/plus/<int(signed=True):b>")
 def add(a, b):
     return f"{a} + {b} = {a+b}"
 
-@app.route("/<int(signed=True):a>/minus/<int(signed=True):b>")
+@app.get("/<int(signed=True):a>/minus/<int(signed=True):b>")
 def subtract(a, b):
     return f"{a} - {b} = {a-b}"
 
-@app.route("/<int(signed=True):a>/times/<int(signed=True):b>")
+@app.get("/<int(signed=True):a>/times/<int(signed=True):b>")
 def multiply(a, b):
     return f"{a} * {b} = {a*b}"
 
-@app.route("/<int(signed=True):a>/over/<int(signed=True):b>")
+@app.get("/<int(signed=True):a>/over/<int(signed=True):b>")
 def divide(a, b):
     return f"{a} / {b} = {a/b}"
 
