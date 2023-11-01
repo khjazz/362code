@@ -6,7 +6,7 @@ student_id = "12621133"
 
 # Write code below
 from flask import (Flask, redirect, render_template_string,
-                   request, url_for)
+                   request)
 app = Flask(__name__)
 
 template_str = """
