@@ -34,8 +34,8 @@ def account_display():
     return render_template_string(template_str, balance=balance, last_txn=last_txn)
 
 @app.route("/deposit", methods=["POST"])
-  def deposit():
-    amount = int(request.form["amount"].strip()) #amount should be >= 0
+def deposit():
+    amount = int(request.form["amount"].strip())
     global balance, last_txn
     balance = balance + amount
     last_txn = f"deposit {amount}"
