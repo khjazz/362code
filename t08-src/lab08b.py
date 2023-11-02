@@ -34,15 +34,15 @@ def account_display():
     return render_template_string(template_str, balance=balance, last_txn=last_txn)
 
 @app.route("/deposit", methods=["POST"])
-def Deposit():
-    amount = int(request.form["amount"].strip())
+  def deposit():
+    amount = int(request.form["amount"].strip()) #amount should be >= 0
     global balance, last_txn
     balance = balance + amount
     last_txn = f"deposit {amount}"
     return redirect("/")
 
 @app.route("/withdraw", methods=["POST"])
-def Withdraw():
+def withdraw():
     global balance, last_txn
     amount = int(request.form["amount"].strip())
     if balance >= amount:
