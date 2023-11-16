@@ -64,37 +64,75 @@ class TestTodoServerUpdate(unittest.TestCase):
     def test_update_todo_item(self):
         """verifies a successful update operation"""
         # 1 create a new todo item, keep its id (refer delete TC)
+        original_desc = "to be updated" # desc
         create_resp = ws_client(f"http://{SERVER}/api/todos",
-                "POST", {"desc": "to be updated"})
-        id = create_resp["id"]
+                "POST", {"desc": original_desc})
+        id = create_resp["id"]  # id
         # 2 get a list of all todos (refer delete TC)
         list_resp = ws_client(f"http://{SERVER}/api/todos")
-        original_size = len(list_resp)
+        original_list_size = len(list_resp) # length
+        self.assertIn(create_resp, list_resp)
         # 3 send update request
         #   require 3 things:
         #   url:
         #   http method: PUT
         #   JSON request data: (refer create TC)
-        resp_data = ws_client(f"http://{SERVER}/api/todos/{id}",
+        update_resp = ws_client(f"http://{SERVER}/api/todos/{id}",
                 "PUT", {"desc": "updated"})
         # 4 check/assert update result
-        self.assertEqual("updated", resp_data["desc"])
+        self.assertEqual("updated", update_resp["desc"])
         # 4a more check
-        self.assertNotEqual("to be updated", resp_data["desc"])
+        self.assertNotEqual(original_desc, update_resp["desc"])
         # 5 get and keep a list of all todos (refere delete TC)
-        new_resp_list = ws_client(f"http://{SERVER}/api/todos") 
-        final_size = len(new_resp_list)
-        self.assertEqual(original_size, final_size)
+        resp_list2 = ws_client(f"http://{SERVER}/api/todos") 
+        self.assertEqual(original_list_size, len(resp_list2))
         # 6 check/assert updated item in second list
+        updated_item = {}
+        for item in resp_list2:
+            if item["id"] == id:
+                updated_item = item
+        self.assertEqual("updated", updated_item["desc"])
+        self.assertNotEqual(original_desc, updated_item["desc"])
         # 7! do more proper checking/assertions
+        self.assertIn(update_resp, resp_list2)
+        self.assertNotIn(create_resp, resp_list2)
 
     def test_update_todo_invalid_desc(self):
-        pass
+        """
+        verifies a failed update operation due to invalid
+        desc data in input data (e.g. a blank string)
+        """
+        original_desc = "created item"
+        create_resp = ws_client(f"http://{SERVER}/api/todos",
+                "POST", {"desc": original_desc})
+        id = create_resp["id"]
+
+        desc_list = [" ", "", None, []]
+        for desc in desc_list:
+            with self.assertRaises(HTTPError) as cm:
+                ws_client(f"http://{SERVER}/api/todos/{id}",
+                        "PUT", {"desc": desc})
+            self.assertEqual(400, cm.exception.code)
+
+        resp_list = ws_client(f"http://{SERVER}/api/todos")
+        resp_data = {}
+        for item in resp_list:
+            if item["id"] == id:
+                resp_data = item
+        self.assertEqual(original_desc, resp_data["desc"])
+        self.assertIn(create_resp, resp_list)
 
     def test_update_todo_invalid_id(self):
-        pass
-        
+        """
+        verifies a failed update operation due to an invalid
+        ID (e.g. 999, assumed to be a non-existing ID)
+        """
+        id = 999
+        with self.assertRaises(HTTPError) as cm:
+            ws_client(f"http://{SERVER}/api/todos/{id}",
+                    "PUT", {"desc": "try to update"})
+        self.assertEqual(404, cm.exception.code)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main(verbosity=2)
