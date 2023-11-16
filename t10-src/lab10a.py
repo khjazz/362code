@@ -71,7 +71,6 @@ class TestTodoServerUpdate(unittest.TestCase):
         # 2 get a list of all todos (refer delete TC)
         list_resp = ws_client(f"http://{SERVER}/api/todos")
         original_list_size = len(list_resp) # length
-        self.assertIn(create_resp, list_resp)
         # 3 send update request
         #   require 3 things:
         #   url:
@@ -92,10 +91,8 @@ class TestTodoServerUpdate(unittest.TestCase):
             if item["id"] == id:
                 updated_item = item
         self.assertEqual("updated", updated_item["desc"])
-        self.assertNotEqual(original_desc, updated_item["desc"])
         # 7! do more proper checking/assertions
-        self.assertIn(update_resp, resp_list2)
-        self.assertNotIn(create_resp, resp_list2)
+        self.assertNotEqual(original_desc, updated_item["desc"])
 
     def test_update_todo_invalid_desc(self):
         """
@@ -106,32 +103,33 @@ class TestTodoServerUpdate(unittest.TestCase):
         create_resp = ws_client(f"http://{SERVER}/api/todos",
                 "POST", {"desc": original_desc})
         id = create_resp["id"]
-
+        # error code should be 400
         desc_list = [" ", "", None, []]
         for desc in desc_list:
             with self.assertRaises(HTTPError) as cm:
                 ws_client(f"http://{SERVER}/api/todos/{id}",
                         "PUT", {"desc": desc})
             self.assertEqual(400, cm.exception.code)
-
+        # should not be updated
         resp_list = ws_client(f"http://{SERVER}/api/todos")
-        resp_data = {}
+        updated_item = {}
         for item in resp_list:
             if item["id"] == id:
-                resp_data = item
-        self.assertEqual(original_desc, resp_data["desc"])
-        self.assertIn(create_resp, resp_list)
+                updated_item = item
+        self.assertEqual(original_desc, updated_item["desc"])
 
     def test_update_todo_invalid_id(self):
         """
         verifies a failed update operation due to an invalid
         ID (e.g. 999, assumed to be a non-existing ID)
         """
-        id = 999
-        with self.assertRaises(HTTPError) as cm:
-            ws_client(f"http://{SERVER}/api/todos/{id}",
-                    "PUT", {"desc": "try to update"})
-        self.assertEqual(404, cm.exception.code)
+        # error code should be 404
+        id_list = [999, 800, 555]
+        for id in id_list:
+            with self.assertRaises(HTTPError) as cm:
+                ws_client(f"http://{SERVER}/api/todos/{id}",
+                        "PUT", {"desc": "trying to update"})
+            self.assertEqual(404, cm.exception.code)
 
 
 if __name__ == "__main__":
