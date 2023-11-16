@@ -38,9 +38,9 @@ def add2(a, b):  # web application
 # step 3: add3(a, b, c)
 @app.get("/plus/<int:a>/<int:b>/<int:c>")
 def add3(a, b, c):
-    a_plus_b = call_ws(a, b)
-    result = call_ws(a_plus_b, c)
-    return f"{a} + {b} + {c} = {result}"
+    result1 = call_ws(a, b)
+    result2 = call_ws(result1, c)
+    return f"{a} + {b} + {c} = {result2}"
 
 if __name__ == "__main__":
     app.run()
