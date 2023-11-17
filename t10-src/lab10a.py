@@ -124,7 +124,7 @@ class TestTodoServerUpdate(unittest.TestCase):
         ID (e.g. 999, assumed to be a non-existing ID)
         """
         # error code should be 404
-        id_list = [999, 800, 555]
+        id_list = [999, 30000, 1e8]
         for id in id_list:
             with self.assertRaises(HTTPError) as cm:
                 ws_client(f"http://{SERVER}/api/todos/{id}",
