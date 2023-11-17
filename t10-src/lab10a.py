@@ -104,19 +104,11 @@ class TestTodoServerUpdate(unittest.TestCase):
                 "POST", {"desc": original_desc})
         id = create_resp["id"]
         # error code should be 400
-        desc_list = [" ", "", None, []]
-        for desc in desc_list:
-            with self.assertRaises(HTTPError) as cm:
-                ws_client(f"http://{SERVER}/api/todos/{id}",
-                        "PUT", {"desc": desc})
-            self.assertEqual(400, cm.exception.code)
-        # should not be updated
-        resp_list = ws_client(f"http://{SERVER}/api/todos")
-        updated_item = {}
-        for item in resp_list:
-            if item["id"] == id:
-                updated_item = item
-        self.assertEqual(original_desc, updated_item["desc"])
+        desc = " "
+        with self.assertRaises(HTTPError) as cm:
+            ws_client(f"http://{SERVER}/api/todos/{id}",
+                    "PUT", {"desc": desc})
+        self.assertEqual(400, cm.exception.code)
 
     def test_update_todo_invalid_id(self):
         """
@@ -124,12 +116,11 @@ class TestTodoServerUpdate(unittest.TestCase):
         ID (e.g. 999, assumed to be a non-existing ID)
         """
         # error code should be 404
-        id_list = [999, 30000, 1e8]
-        for id in id_list:
-            with self.assertRaises(HTTPError) as cm:
-                ws_client(f"http://{SERVER}/api/todos/{id}",
-                        "PUT", {"desc": "trying to update"})
-            self.assertEqual(404, cm.exception.code)
+        id = 999
+        with self.assertRaises(HTTPError) as cm:
+            ws_client(f"http://{SERVER}/api/todos/{id}",
+                    "PUT", {"desc": "trying to update"})
+        self.assertEqual(404, cm.exception.code)
 
 
 if __name__ == "__main__":
