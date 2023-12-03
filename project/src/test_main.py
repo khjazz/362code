@@ -115,8 +115,11 @@ class TestLoginStat(TestLoginValidation):
         """
         Helper function to get the login count of a user.
         """
-        with open(STAT_FILENAME, "r") as file:
-            log = json.load(file)
+        try:
+            with open(STAT_FILENAME) as file:
+                log = json.load(file)
+        except:
+            log = {}
         return log.get(username, 0)
 
     def assert_count_diff_with_login(self, endpoint, username, password, count_diff):
