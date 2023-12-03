@@ -223,6 +223,9 @@ class TestPiEndpoint(BaseTestWebService):
             "simulations": simulations,
             "concurrency": 8,
         }
+        # warm up the server
+        self.ps_ws(data_eight_concurrency)
+        
         time_one_concurrency = self.pi_ws(data_one_concurrency).get("time")
         time_eight_concurrency = self.pi_ws(data_eight_concurrency).get("time")
         self.assertLess(time_eight_concurrency, time_one_concurrency)
