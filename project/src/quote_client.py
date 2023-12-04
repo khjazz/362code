@@ -8,6 +8,7 @@ def get_quotes(host, port, protocol, concurrency, executor=ThreadPoolExecutor())
     Use a thread pool to start multiple clients to get quotes from the quote server.
     Protocol can be "tcp" or "udp".
     """
+    # validate the protocol value
     if protocol not in ["tcp", "udp"]:
         raise ValueError("protocol must be tcp or udp")
     try:

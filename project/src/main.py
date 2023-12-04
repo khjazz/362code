@@ -37,12 +37,17 @@ def validate_request(data, required_fields, optional_fields):
     Takes in the data, a dictionary of required fields and their validators,
     and a dictionary of optional fields and their validators.
     """
+    # check if the request contains all required fields
+    # and if the fields are valid
+    # if not, return error message and status code
     for field, validator in required_fields.items():
         if field not in data:
             return {"error": f"missing field {field}"}, 400
         if not validator(data[field]):
             return {"error": f"invalid field {field}"}, 400
 
+    # check if the optional fields are valid
+    # if not, return error message and status code
     for field, validator in optional_fields.items():
         if field in data and not validator(data[field]):
             return {"error": f"invalid field {field}"}, 400
