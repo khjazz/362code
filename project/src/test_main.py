@@ -211,7 +211,7 @@ class TestPiEndpoint(BaseTestWebService):
         Test the processing time of the pi estimation web service with different concurrency.
         Should have the processing time decrease as the concurrency increases.
         """
-        simulations = 100000
+        simulations = 1000000
         data_one_concurrency = {
             "username": "9999",
             "password": "9999-pw",

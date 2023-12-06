@@ -59,8 +59,8 @@ def validate_request(data, required_fields, optional_fields):
 def pi():
     start_time = time()
     data = request.get_json()
+    logging.debug(f"data: {data} from {request.remote_addr} start time: {start_time}")
 
-    logging.debug("Received data: " + str(data) + " from " + request.remote_addr)
     if not handle_login(data):
         return {"error": "user info error"}, 401
 
@@ -87,8 +87,8 @@ def pi():
 def quote():
     start_time = time()
     data = request.get_json()
+    logging.debug(f"data: {data} from {request.remote_addr} start time: {start_time}")
 
-    logging.debug("Received data: " + str(data) + " from " + request.remote_addr)
     if not handle_login(data):
         return {"error": "user info error"}, 401
 
