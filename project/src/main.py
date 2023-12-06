@@ -78,8 +78,9 @@ def pi():
         data["simulations"], data.get("concurrency", 1), pi_executor
     )
     # add time value into the return dictionary
-    result["time"] = time() - start_time
-    logging.debug(result)
+    end_time = time()
+    result["time"] = end_time - start_time
+    logging.debug(f"Result: {result} end time: {end_time}")
     return result
 
 
@@ -108,8 +109,9 @@ def quote():
         quote_executor,
     )
     # add time value into the return dictionary
-    result["time"] = time() - start_time
-    logging.debug(result)
+    end_time = time()
+    result["time"] = end_time - start_time
+    logging.debug(f"Result: {result} end time: {end_time}")
     return result
 
 
