@@ -223,8 +223,8 @@ class TestPiEndpoint(BaseTestWebService):
             "simulations": simulations,
             "concurrency": 8,
         }
-        # warm up the server
-        self.pi_ws(data_eight_concurrency)
+        # warm up the server, allocate the processes if not already
+        # self.pi_ws(data_eight_concurrency)
 
         time_one_concurrency = self.pi_ws(data_one_concurrency).get("time")
         time_eight_concurrency = self.pi_ws(data_eight_concurrency).get("time")
