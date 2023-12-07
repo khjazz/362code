@@ -357,12 +357,7 @@ class TestQuoteEndpoint(BaseTestWebService):
         Should have "missing field protocol" and status code 400 in the response.
         """
         data = {"username": "9998", "password": "9998-pw", "concurrency": 1}
-        with self.assertRaises(HTTPError) as cm:
-            self.quote_ws(data)
-        self.assertEqual(400, cm.exception.code)
-        self.assertEqual(
-            "missing field protocol", json.loads(cm.exception.read().decode())["error"]
-        )
+        self.assert_ws_error(self.quote_ws, data, 400, "missing field protocol")
 
     def test_quote_invalid_protocol(self):
         """Test with invalid protocol.
