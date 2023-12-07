@@ -211,7 +211,7 @@ class TestPiEndpoint(BaseTestWebService):
         Test the processing time of the pi estimation web service with different concurrency.
         Should have the processing time decrease as the concurrency increases.
         """
-        simulations = 1000000
+        simulations = 10000000
         data_one_concurrency = {
             "username": "9999",
             "password": "9999-pw",
@@ -223,8 +223,6 @@ class TestPiEndpoint(BaseTestWebService):
             "simulations": simulations,
             "concurrency": 8,
         }
-        # warm up the server, allocate the processes if not already
-        # self.pi_ws(data_eight_concurrency)
 
         time_one_concurrency = self.pi_ws(data_one_concurrency).get("time")
         time_eight_concurrency = self.pi_ws(data_eight_concurrency).get("time")
