@@ -21,10 +21,10 @@ def ws_client(url, method=None, data=None):
     return result
 
 
-class TestLoginValidation(unittest.TestCase):
+class BaseTestLogin(unittest.TestCase):
     """
-    Test for the login validation logic.
-    """
+    Base test class for login-related tests.
+    Contains common setup and helper functions."""
 
     def setUp(self):
         self.endpoints = ["pi", "quote"]
@@ -42,7 +42,13 @@ class TestLoginValidation(unittest.TestCase):
             info["password"] = password
         ws_client(f"http://{server}/{endpoint}", "POST", info)
 
-    def test_valid_user_info(self):
+
+class TestLoginValidation(BaseTestLogin):
+    """
+    Test for the login validation logic.
+    """
+
+    def test_login_valid_user_info(self):
         """
         Test with valid user info.
         Should not have "user info error" and status code 401 in the response.
@@ -56,7 +62,7 @@ class TestLoginValidation(unittest.TestCase):
                     "user info error", json.loads(e.read().decode())["error"]
                 )
 
-    def test_missing_username(self):
+    def test_login_missing_username(self):
         """
         Test with missing username.
         Should have "user info error" and status code 401 in the response.
@@ -64,7 +70,7 @@ class TestLoginValidation(unittest.TestCase):
         for endpoint in self.endpoints:
             self.assert_login_error(endpoint, password="0000-pw")
 
-    def test_missing_password(self):
+    def test_login_missing_password(self):
         """
         Test with missing password.
         Should have "user info error" and status code 401 in the response.
@@ -72,7 +78,7 @@ class TestLoginValidation(unittest.TestCase):
         for endpoint in self.endpoints:
             self.assert_login_error(endpoint, username="0000")
 
-    def test_invalid_username_format(self):
+    def test_login_invalid_username_format(self):
         """
         Test with invalid username formats.
         Should have "user info error" and status code 401 in the response.
@@ -83,7 +89,7 @@ class TestLoginValidation(unittest.TestCase):
                     endpoint, username=username, password=username + "-pw"
                 )
 
-    def test_invalid_password_format(self):
+    def test_login_invalid_password_format(self):
         """
         Test with invalid password formats.
         Should have "user info error" and status code 401 in the response."""
@@ -106,7 +112,7 @@ class TestLoginValidation(unittest.TestCase):
         )
 
 
-class TestLoginStat(TestLoginValidation):
+class TestLoginStat(BaseTestLogin):
     """
     Test for the login statistics functionality.
     """
@@ -172,6 +178,10 @@ class TestLoginStat(TestLoginValidation):
 
 
 class BaseTestWebService(unittest.TestCase):
+    """
+    Base test class for web service tests.
+    Contains common setup and helper functions."""
+
     INVALID_SIMULATIONS = [99, 100000001, "100", 100.0, None]
     INVALID_PROTOCOL = [1, "http", "smtp", None]
     INVALID_CONCURRENCIES = [0, 9, -100, None]
@@ -195,7 +205,7 @@ class TestPiEndpoint(BaseTestWebService):
         """
         return ws_client(f"http://{SERVER}/pi", "POST", data)
 
-    def test_estimate_pi(self):
+    def test_pi_estimation_valid(self):
         """
         Test with valid user info.
         Should return the estimated pi value within 1 of the actual value.
