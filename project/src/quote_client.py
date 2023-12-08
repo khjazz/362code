@@ -1,5 +1,4 @@
 import socket
-import logging
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -19,7 +18,7 @@ def get_quotes(host, port, protocol, concurrency, executor=ThreadPoolExecutor())
         )
         return {"protocol": protocol, "concurrency": concurrency, "quotes": list(res)}
     except Exception as e:
-        logging.error(f"Error trying to get quotes from the quote server: {e}")
+        raise e
 
 
 def start_tcp_client(host, port):

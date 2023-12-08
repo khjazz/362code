@@ -101,13 +101,17 @@ def quote():
         logging.info(f"invalid request from {request.remote_addr} error: {error}")
         return error, status
 
-    result = get_quotes(
-        QUOTE_SERVER_HOST,
-        QUOTE_SERVER_PORT,
-        data["protocol"],
-        data.get("concurrency", 1),
-        quote_executor,
-    )
+    try:
+        result = get_quotes(
+            QUOTE_SERVER_HOST,
+            QUOTE_SERVER_PORT,
+            data["protocol"],
+            data.get("concurrency", 1),
+            quote_executor,
+        )
+    except Exception as e:
+        logging.error(f"Error trying to get quotes from the quote server: {e}")
+        return {"error": "quote server error"}, 500
     # add time value into the return dictionary
     end_time = time()
     result["time"] = end_time - start_time
