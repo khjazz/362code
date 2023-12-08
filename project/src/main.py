@@ -24,8 +24,8 @@ def handle_login(data):
         login_stat.increment_user_login_count(data["username"])
         return True
     else:
-        logging.info(
-            f"Failed login attempt from {request.remote_addr} to user-{data.get('username', 'unknown')} "
+        logging.warning(
+            f"Failed login attempt from {request.remote_addr} to user-{data.get('username', 'unknown')}"
         )
         return False
 
@@ -71,7 +71,7 @@ def pi():
     )
 
     if error:
-        logging.info(f"invalid request from {request.remote_addr} error: {error}")
+        logging.warning(f"invalid request from {request.remote_addr} error: {error}")
         return error, status
 
     result = estimate_pi_processes(
